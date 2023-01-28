@@ -8,7 +8,6 @@ userTable = Table("User", meta,
                   Column("id", INTEGER, primary_key=True),
                   Column("username", VARCHAR(30)),
                   Column("password", VARCHAR(50)),
-                  Column("balance", FLOAT),
                   Column('status', SMALLINT)
                 )
 

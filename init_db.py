@@ -11,8 +11,8 @@ conn.execute('TRUNCATE TABLE Operation')
 conn.execute('TRUNCATE TABLE Record')
 
 user = [
-    {'username': 'test1@test.com', 'password': password1_hashed, 'balance': 20.0, 'status': 0},
-    {'username': 'test2@test.com', 'password': password2_hashed, 'balance': 30.0, 'status': 0}
+    {'username': 'test1@test.com', 'password': password1_hashed, 'status': 0},
+    {'username': 'test2@test.com', 'password': password2_hashed, 'status': 0}
     ]
 
 result = conn.execute(userTable.insert().values(user))
@@ -28,5 +28,7 @@ operation = [
     ]
 
 result = conn.execute(operationTable.insert().values(operation))
+
+
 
 conn.close()

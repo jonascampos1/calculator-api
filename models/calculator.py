@@ -17,7 +17,7 @@ recordTable = Table("Record", meta,
                   Column("user_id", INTEGER),
                   Column("amount", FLOAT),
                   Column("user_balance", FLOAT),
-                  Column("operation_response", INTEGER),
+                  Column("operation_response", VARCHAR(30)),
                   Column("date", DATETIME),
                   Column("deletedAt", DATETIME, nullable=True)
                 )
