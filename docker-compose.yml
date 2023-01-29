@@ -1,34 +1,29 @@
 version: "3.9"
 services:
   db:
+    image: mysql
     restart: on-failure
-    image: postgres
     container_name: db
     hostname: db
+    command: --default-authentication-plugin=mysql_native_password
     ports:
-      - "5432:5432"
+      - "3306:3306"
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=jonas
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=jonas
-  point_of_sale:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: jonas
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: calculator
+  calculator:
     restart: on-failure
     build: .
-    container_name: pos
+    container_name: calculator
     ports:
-      - "3001:3001"
+      - "3000:3000"
     depends_on:
       - db
     external_links:
       - db
     environment:
-      - FLASK_APP=setup.py
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=jonas
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=jonas
+      - ROUTE_API=/api/v1/
     volumes:
       - .:/home/app

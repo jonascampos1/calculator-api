@@ -30,7 +30,7 @@ def operation_endpoints(app,route_api):
         return response
 
 
-    @app.route(route_api+'/operations/<user_id>', methods=["POST"])
+    @app.route(route_api+'/records/<user_id>', methods=["POST"])
     def getRecords(user_id):
         try:
             id = int(user_id)
@@ -38,6 +38,15 @@ def operation_endpoints(app,route_api):
             return {'msg': 'Bad parameters int needed'}
         res = calculator.getRecords_(id)
         return res
+    
+    @app.route(route_api+'/records/<id>', methods=["DELETE"])
+    def deleteRecords(id):
+        try:
+            id = int(id)
+        except ValueError:
+            return {'msg': 'Bad parameters int needed'}
+        res = calculator.deleteRecord_(id)
+        return {'message': f'Deleted id: {id} '}
     
 
     @app.route(route_api+'/sum', methods=["POST"])

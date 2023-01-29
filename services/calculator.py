@@ -101,9 +101,7 @@ def getOperations_():
 
 def getRecords_(user_id: int):
     res = conn \
-        .execute(recordTable
-                 .select()
-                 .where(recordTable.c.user_id == user_id ))\
+        .execute(f"SELECT * FROM Record WHERE user_id={user_id} AND deletedAt IS NULL")\
                  .fetchall()
     
     record=[]
@@ -119,3 +117,9 @@ def getRecords_(user_id: int):
             'deletedAt': item.deletedAt,
         })
     return record
+
+def deleteRecord_(id):
+    date = datetime.now()
+    date = str(date)
+    res = conn.execute(f'UPDATE Record SET deletedAt="{date}" WHERE id="{id}"')
+    print(res)
