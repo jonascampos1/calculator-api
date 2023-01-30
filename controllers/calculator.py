@@ -1,5 +1,6 @@
 from flask import request, jsonify
 from services import calculator
+from services import user
 import os
 import requests
 
@@ -85,7 +86,12 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'Error is not a int or float'})
             return response, 400
         
-        response = calculator.sum_(v1,v2, user_id, operation)        
+        rbalance = calculator.checkBalance_(operation,user_id)
+        if rbalance["check"]:
+            response = calculator.sum_(v1,v2, user_id, operation)
+        else:
+            response = {'message': 'Credit not enough'}
+
         return response
 
     
@@ -108,7 +114,12 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'Error is not a int or float'})
             return response, 400
         
-        response = calculator.sub_(v1,v2, user_id, operation)        
+        rbalance = calculator.checkBalance_(operation,user_id)
+        if rbalance["check"]:
+            response = calculator.sub_(v1,v2, user_id, operation)
+        else:
+            response = {'message': 'Credit not enough'}
+            
         return response
 
 
@@ -127,7 +138,12 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'TypeError is not a int or float'})
             return response, 400
 
-        response = calculator.mult_(v1,v2, user_id, operation)
+        rbalance = calculator.checkBalance_(operation,user_id)
+        if rbalance["check"]:
+            response = calculator.mult_(v1,v2, user_id, operation)
+        else:
+            response = {'message': 'Credit not enough'}
+            
         return response
 
 
@@ -145,7 +161,12 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'TypeError is not a int or float'})
             return response, 400
 
-        response = calculator.div_(v1,v2, user_id, operation)
+        rbalance = calculator.checkBalance_(operation,user_id)
+        if rbalance["check"]:
+            response = calculator.div_(v1,v2, user_id, operation)
+        else:
+            response = {'message': 'Credit not enough'}
+            
         return response
 
 
@@ -166,9 +187,13 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'Need a positive value'})
             return response, 400
 
-        response = calculator.sqrt_(v1, user_id, operation)
+        rbalance = calculator.checkBalance_(operation,user_id)
+        if rbalance["check"]:
+            response = calculator.square_root_(v1, user_id, operation)
+        else:
+            response = {'message': 'Credit not enough'}
+            
         return response
-
 
     @app.route(route_api+'/random_string', methods=["POST"])
     def rand_string():
@@ -202,5 +227,10 @@ def operation_endpoints(app,route_api):
         else:
             response = {'message': f'Error trying to get random string StatusCode: {data.status_code}'}
 
-        response = calculator.rand_str_(user_id, operation,result)
+        rbalance = calculator.checkBalance_(operation,user_id)
+        if rbalance["check"]:
+            response = calculator.rand_str_(user_id, operation,result)
+        else:
+            response = {'message': 'Credit not enough'}
+            
         return response

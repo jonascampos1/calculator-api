@@ -34,7 +34,7 @@ def checkBalance_(operation: str, user_id: int):
         else:
             return {'check': False}
     else:
-        return {'message': 'invalid parameters'}
+        return {'check': False}
     
 
 def insertRecord(user_id, operation: str, user_balance, response):
@@ -100,7 +100,7 @@ def div_(v1,v2,user_id, operation):
     return response
 
 
-def sqrt_(v1,user_id, operation):
+def square_root_(v1,user_id, operation):
     result = round(sqrt(v1),2)
     r = getOperations_by_type_(operation)
     user_balance = getBalance_(user_id)

@@ -53,7 +53,4 @@ def user_endpoints(app,route_api):
             return response, 400
 
         response = getBalance_(id)
-        if response != -1:
-            return {'balance': response }
-        else:
-            return {'message': 'User not found'}
+        return {'balance': response }

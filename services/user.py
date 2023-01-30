@@ -19,7 +19,5 @@ def verify_user_exist(username):
 
 def getBalance_(id):
     result = conn.execute(userTable.select().where(userTable.c.id == id)).first()
-    if result is not None:
-        return int(result['balance'])
-    else:
-        return -1
+    return int(result['balance'])
+    
