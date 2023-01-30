@@ -44,6 +44,7 @@ python init_db.py
 ```
 
 ## Table User
+```sh
 +----------+-------------+------+-----+---------+----------------+
 | Field    | Type        | Null | Key | Default | Extra          |
 +----------+-------------+------+-----+---------+----------------+
@@ -53,8 +54,10 @@ python init_db.py
 | status   | smallint    | YES  |     | NULL    |                |
 | balance  | float       | YES  |     | NULL    |                |
 +----------+-------------+------+-----+---------+----------------+
+```
 
 ## Table Record
+```sh
 +--------------------+-------------+------+-----+---------+----------------+
 | Field              | Type        | Null | Key | Default | Extra          |
 +--------------------+-------------+------+-----+---------+----------------+
@@ -67,12 +70,10 @@ python init_db.py
 | date               | datetime    | YES  |     | NULL    |                |
 | deletedAt          | datetime    | YES  |     | NULL    |                |
 +--------------------+-------------+------+-----+---------+----------------+
-
+```
 ### 
 
-```sh
-npm run test:unit
-```
+
 
 ### Include 2 users to access login with this values(password is hashed on DB)
 
