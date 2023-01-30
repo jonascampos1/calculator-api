@@ -134,11 +134,27 @@ def getOperations_():
         })
     return operation
 
-
-def getRecords_(user_id: int):
+def getTotalRecords(user_id):
+    
     res = conn \
-        .execute(f"SELECT * FROM Record WHERE user_id={user_id} AND deletedAt IS NULL")\
-                 .fetchall()
+        .execute\
+        (f"SELECT count(1) as total FROM Record \
+        WHERE user_id={user_id} \
+        AND deletedAt is NULL\
+        ").first()
+    return res.total
+
+def getRecords_(user_id, page, order_field, order, elements_peer_page):
+    npag = (page-1)*elements_peer_page
+    res = conn \
+        .execute\
+        (f"SELECT * FROM Record \
+        WHERE user_id={user_id} \
+        AND deletedAt IS NULL\
+        ORDER BY {order_field} {order}\
+        LIMIT {npag},{elements_peer_page}\
+        ").fetchall()
+    
     
     record=[]
     for item in res:

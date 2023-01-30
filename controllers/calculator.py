@@ -48,15 +48,47 @@ def operation_endpoints(app,route_api):
         return response
 
 
-    @app.route(route_api+'/records/<user_id>', methods=["POST"])
-    def getRecords(user_id):
+    @app.route(route_api+'/records_total', methods=["POST"])
+    def getRecordsTotal():
         try:
-            id = int(user_id)
+            user_id = int(request.json.get('user_id'))
         except ValueError:
-            return {'msg': 'Bad parameters int needed'}
-        res = calculator.getRecords_(id)
+            response = jsonify({'msg': 'Bad parameters'})
+            return response, 400
+        except TypeError:
+            response = jsonify({'msg': 'Bad parameters'})
+            return response, 400
+
+        res = calculator.getTotalRecords(user_id)
+        return { 'total': res }
+
+
+    @app.route(route_api+'/records', methods=["POST"])
+    def getRecords():
+        try:
+            user_id = int(request.json.get('user_id'))
+            page = int(request.json.get('page'))
+            elements_peer_page = int(request.json.get('elements_peer_page'))
+        except ValueError:
+            response = jsonify({'msg': 'Bad parameters'})
+            return response, 400
+        except TypeError:
+            response = jsonify({'msg': 'Bad parameters'})
+            return response, 400
+        
+        order_field = request.json.get('order_field')
+        if order_field is None:
+            return {'msg': 'Bad parameters'}
+
+        order = request.json.get('order')
+        if order is None:
+            response = jsonify({'msg': 'Bad parameters'})
+            return response, 400
+
+        res = calculator.getRecords_(user_id, page, order_field, order, elements_peer_page)
         return res
     
+
     @app.route(route_api+'/records/<id>', methods=["DELETE"])
     def deleteRecords(id):
         try:
