@@ -265,9 +265,19 @@ Response JSON Object example
 ```
 
 ## Endpoint get Records of a user method POST
-### api/v1/records/<id>
-Description: Soft Delete a record by his id
-	
+### api/v1/records
+Description: Get records from an user with pagination
+
+Request JSON Object example
+```sh
+{
+    "user_id": "1",
+    "page": "1",
+    "elements_peer_page": "10",
+    "order_field": "id",
+    "order": "desc"
+}
+```
 
 Response JSON Object example
 ```sh
@@ -302,5 +312,24 @@ Response JSON Object example
 ```sh
 {
     "check": true
+}
+```
+
+## Endpoint get total records for pagination method POST
+### /api/v1/records_total
+Description: Verify the balance and the operation cost if have enough balance get true
+	
+
+Request JSON Object example
+```sh
+{
+    "user_id": "1"
+}
+```
+	
+Response JSON Object example
+```sh
+{
+    "total": 11
 }
 ```
