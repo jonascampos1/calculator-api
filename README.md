@@ -31,7 +31,7 @@ python init_db.py
 ```
 
 ### This add the tables content necessary for work
-
+## Table Operation
 ```sh
  id | type           | cost |
 +----+----------------+------+
@@ -42,6 +42,31 @@ python init_db.py
 |  5 | square_root    |    5 |
 |  6 | random_string  |    6 |
 ```
+
+## Table User
++----------+-------------+------+-----+---------+----------------+
+| Field    | Type        | Null | Key | Default | Extra          |
++----------+-------------+------+-----+---------+----------------+
+| id       | int         | NO   | PRI | NULL    | auto_increment |
+| username | varchar(30) | YES  |     | NULL    |                |
+| password | varchar(50) | YES  |     | NULL    |                |
+| status   | smallint    | YES  |     | NULL    |                |
+| balance  | float       | YES  |     | NULL    |                |
++----------+-------------+------+-----+---------+----------------+
+
+## Table Record
++--------------------+-------------+------+-----+---------+----------------+
+| Field              | Type        | Null | Key | Default | Extra          |
++--------------------+-------------+------+-----+---------+----------------+
+| id                 | int         | NO   | PRI | NULL    | auto_increment |
+| operation_id       | int         | YES  |     | NULL    |                |
+| user_id            | int         | YES  |     | NULL    |                |
+| amount             | float       | YES  |     | NULL    |                |
+| user_balance       | float       | YES  |     | NULL    |                |
+| operation_response | varchar(30) | YES  |     | NULL    |                |
+| date               | datetime    | YES  |     | NULL    |                |
+| deletedAt          | datetime    | YES  |     | NULL    |                |
++--------------------+-------------+------+-----+---------+----------------+
 
 ### 
 
@@ -60,3 +85,26 @@ password: aB12345#
 ```
 
 You are ready to use this backend project
+
+# API Documentation
+
+## Endpoint Addition method POST
+### /api/v1/sum
+Description: Sum two values rest credit balance and insert a Record 
+
+Required JSON Object example
+```sh
+{
+    "v1": "3",
+    "v2": "2",
+    "user_id": 1
+}
+```
+Response JSON Object example
+```sh
+{
+    "cost": 1.0,
+    "result": 5.0,
+    "user_balance": 5
+}
+```
