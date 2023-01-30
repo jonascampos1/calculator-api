@@ -1,6 +1,6 @@
 from flask import request, jsonify
 import re
-from services.user import create_user
+from services.user import create_user, getBalance_
 import services.user as user_service
 import hashlib
 
@@ -8,6 +8,7 @@ import hashlib
 
 
 def user_endpoints(app,route_api):
+
 
 
     @app.route(route_api + 'user', methods=['POST'])
@@ -38,3 +39,21 @@ def user_endpoints(app,route_api):
 
         r = create_user(user_new)
         return {'User created': f'{r}:yes'}
+
+    
+    @app.route(route_api + 'userbalance/<id>', methods=['POST'])
+    def getBalance(id):
+        try:
+            id = int(id)
+        except ValueError:
+            response = jsonify({'message': 'Expecting int'})
+            return response, 400
+        except TypeError:
+            response = jsonify({'message': 'Expecting int'})
+            return response, 400
+
+        response = getBalance_(id)
+        if response != -1:
+            return {'balance': response }
+        else:
+            return {'message': 'User not found'}

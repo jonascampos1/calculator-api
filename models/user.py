@@ -8,7 +8,8 @@ userTable = Table("User", meta,
                   Column("id", INTEGER, primary_key=True),
                   Column("username", VARCHAR(30)),
                   Column("password", VARCHAR(50)),
-                  Column('status', SMALLINT)
+                  Column('status', SMALLINT),
+                  Column('balance', FLOAT)
                 )
 
 meta.create_all(engine)

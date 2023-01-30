@@ -25,5 +25,9 @@ services:
       - db
     environment:
       - ROUTE_API=/api/v1/
+      - MYSQL_USER=jonas
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=calculator
+      - MYSQL_HOST=db
     volumes:
       - .:/home/app

@@ -21,7 +21,8 @@ def auth_user(username, password):
         if username == res.username and password_hashed == res.password:
             return {'auth': 1,
                     'username': res.username,
-                    'user_id': res.id
+                    'user_id': res.id,
+                    'balance': res.balance
                     }
         else:
             return {'auth': 0}

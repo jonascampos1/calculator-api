@@ -22,7 +22,8 @@ def auth_endpoints(app,route_api):
         if response['auth'] == 1:
             return jsonify({'msg': 'Auth Success',
                             'username': response["username"],
-                            'user_id': response["user_id"]
+                            'user_id': response["user_id"],
+                            'balance': response["balance"]
                             }), 200
         else:
             return jsonify({'msg': 'Auth Failure'}), 401

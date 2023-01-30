@@ -7,26 +7,43 @@ import requests
 
 def operation_endpoints(app,route_api):
 
-    @app.route(route_api+'/operations', methods=["POST"])
-    def getOperations():
-        res = calculator.getOperations_
-        return res
-
     
     @app.route(route_api+'/operations/cost/<type_>', methods=["POST"])
     def getOperations_by_type(type_):
-        
         res = calculator.getOperations_by_type_(type_)
-        
-
         try: 
-            response = {'id': res["id"], 'type': res["type"], 'cost': res.cost }
+            response = {'cost': res.cost}
         except KeyError:
             response={ 'message': 'Operation not found'}
         except ValueError:
             response={ 'message': 'Operation not found'}
         except TypeError:
             response={ 'message': 'Operation not found'}
+        return response
+
+
+    @app.route(route_api+'/operations', methods=["POST"])
+    def getOperations():
+        res = calculator.getOperations_()
+        return res
+
+    
+    @app.route(route_api+'/checkbalance', methods=["POST"])
+    def checkBalance():
+        try:
+            operation = request.json.get('operation')
+            user_id = request.json.get('user_id')
+        except KeyError:
+            response={ 'message': 'Operation not found'}
+            return response
+        except ValueError:
+            response={ 'message': 'Operation not found'}
+            return response
+        except TypeError:
+            response={ 'message': 'Operation not found'}
+            return response
+
+        response = calculator.checkBalance_(operation, user_id)
         return response
 
 
@@ -56,7 +73,6 @@ def operation_endpoints(app,route_api):
             v2 = float(request.json.get('v2'))
             user_id = int(request.json.get('user_id'))
             operation = 'addition'
-            user_balance = int(request.json.get('user_balance'))
             
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
@@ -69,7 +85,7 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'Error is not a int or float'})
             return response, 400
         
-        response = calculator.sum_(v1,v2, user_id, operation, user_balance)        
+        response = calculator.sum_(v1,v2, user_id, operation)        
         return response
 
     
@@ -80,7 +96,6 @@ def operation_endpoints(app,route_api):
             v2 = float(request.json.get('v2'))
             user_id = int(request.json.get('user_id'))
             operation = 'substraction'
-            user_balance = int(request.json.get('user_balance'))
             
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
@@ -93,7 +108,7 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'Error is not a int or float'})
             return response, 400
         
-        response = calculator.sub_(v1,v2, user_id, operation, user_balance)        
+        response = calculator.sub_(v1,v2, user_id, operation)        
         return response
 
 
@@ -104,7 +119,6 @@ def operation_endpoints(app,route_api):
             v2 = float(request.json.get('v2'))
             user_id = int(request.json.get('user_id'))
             operation = 'multiplication'
-            user_balance = int(request.json.get('user_balance'))
 
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
@@ -113,7 +127,7 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'TypeError is not a int or float'})
             return response, 400
 
-        response = calculator.mult_(v1,v2, user_id, operation, user_balance)
+        response = calculator.mult_(v1,v2, user_id, operation)
         return response
 
 
@@ -124,7 +138,6 @@ def operation_endpoints(app,route_api):
             v2 = float(request.json.get('v2'))
             user_id = int(request.json.get('user_id'))
             operation = 'division'
-            user_balance = int(request.json.get('user_balance'))
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
             return response, 400
@@ -132,7 +145,7 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'TypeError is not a int or float'})
             return response, 400
 
-        response = calculator.div_(v1,v2, user_id, operation, user_balance)
+        response = calculator.div_(v1,v2, user_id, operation)
         return response
 
 
@@ -142,7 +155,6 @@ def operation_endpoints(app,route_api):
             v1 = float(request.json.get('v1'))
             user_id = int(request.json.get('user_id'))
             operation = 'square_root'
-            user_balance = int(request.json.get('user_balance'))
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
             return response, 400
@@ -154,7 +166,7 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'Need a positive value'})
             return response, 400
 
-        response = calculator.sqrt_(v1, user_id, operation, user_balance)
+        response = calculator.sqrt_(v1, user_id, operation)
         return response
 
 
@@ -164,7 +176,6 @@ def operation_endpoints(app,route_api):
         try:
             user_id = int(request.json.get('user_id'))
             operation = 'random_string'
-            user_balance = int(request.json.get('user_balance'))
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
             return response, 400
@@ -191,5 +202,5 @@ def operation_endpoints(app,route_api):
         else:
             response = {'message': f'Error trying to get random string StatusCode: {data.status_code}'}
 
-        response = calculator.rand_str_(user_id, operation, user_balance,result)
+        response = calculator.rand_str_(user_id, operation,result)
         return response
