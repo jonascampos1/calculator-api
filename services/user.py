@@ -31,7 +31,9 @@ def verify_user_exist(username):
     return resultv
 
 def getBalance_(id):
-    cursor.execute('SELECT balance FROM User WHERE id='+str(id))
+    sql='SELECT balance FROM User WHERE id='+str(id)
+    cursor.execute(sql)
+    print(sql)
     resultb= cursor.fetchone()
     #resultb = conn.execute(userTable.select().where(userTable.c.id == id)).first()
     for e in resultb:
