@@ -10,7 +10,6 @@ password=os.getenv('MYSQL_PASSWORD')
 host=os.getenv('MYSQL_HOST')
 database=os.getenv('MYSQL_DATABASE')
 
-
 engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}:3306/{database}')
 
 meta = MetaData()

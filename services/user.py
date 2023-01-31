@@ -9,15 +9,15 @@ def get_users():
 
 
 def create_user(user: User):
-    result = conn.execute(userTable.insert().values(user))
-    return conn.execute(userTable.select().where(userTable.c.id == result.lastrowid)).first()
+    resultc = conn.execute(userTable.insert().values(user))
+    return conn.execute(userTable.select().where(userTable.c.id == resultc.lastrowid)).first()
 
 
 def verify_user_exist(username):
-    result = conn.execute(userTable.select().where(userTable.c.username == username)).first()
-    return result
+    resultv = conn.execute(userTable.select().where(userTable.c.username == username)).first()
+    return resultv
 
 def getBalance_(id):
-    result = conn.execute(userTable.select().where(userTable.c.id == id)).first()
-    return int(result['balance'])
+    resultb = conn.execute(userTable.select().where(userTable.c.id == id)).first()
+    return int(resultb['balance'])
     
