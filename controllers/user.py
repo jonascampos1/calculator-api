@@ -43,6 +43,7 @@ def user_endpoints(app,route_api):
     
     @app.route(route_api + 'userbalance/<id>', methods=['POST'])
     def getBalance(id):
+        response = {}
         try:
             id = int(id)
         except ValueError:
