@@ -15,8 +15,24 @@ def get_users():
 
 
 def create_user(user: User):
-    resultc = conn.execute(userTable.insert().values(user))
-    return conn.execute(userTable.select().where(userTable.c.id == resultc.lastrowid)).first()
+    connection = connect_mysql()
+
+    with connection:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = "INSERT INTO `User` (\
+                    username,\
+                    password,\
+                    status,\
+                    balance\
+                    ) \
+                    VALUES(%s,%s,%s,%s)"
+            print(sql, (user["username"],user['password'],user['active'],user['balance']))
+            cursor.execute(sql, (user["username"],user['password'],user['active'],user['balance']))
+            
+        connection.commit()
+        r = connection.insert_id()
+    return r
 
 
 def verify_user_exist(username):
