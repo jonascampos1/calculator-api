@@ -18,7 +18,6 @@ def verify_user_exist(username):
     return resultv
 
 def getBalance_(id):
-    
     resultb = conn.execute(userTable.select().where(userTable.c.id == id)).first()
     return int(resultb['balance'])
     
