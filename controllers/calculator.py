@@ -11,7 +11,7 @@ def operation_endpoints(app,route_api):
     def getOperations_by_type(type_):
         res = calculator.getOperations_by_type_(type_)
         try: 
-            response = {'cost': res.cost}
+            response = {'cost': res['cost']}
         except KeyError:
             response={ 'message': 'Operation not found'}
         except ValueError:

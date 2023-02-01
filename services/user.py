@@ -1,10 +1,16 @@
-from models.user import userTable
-from config.db import conn
+from config.pymysql_db import connect_mysql
 from models.user import User
 
 
 def get_users():
-    r = conn.execute(userTable.select()).fetchall()
+    connection = connect_mysql()
+    with connection:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = "SELECT * FROM `User`"
+            cursor.execute(sql)
+            r = cursor.fetchall()
+            cursor.close()
     return r
 
 
@@ -14,10 +20,25 @@ def create_user(user: User):
 
 
 def verify_user_exist(username):
-    resultv = conn.execute(userTable.select().where(userTable.c.username == username)).first()
-    return resultv
+    connection = connect_mysql()
+    with connection:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = "SELECT * FROM `User` WHERE username=%s"
+            cursor.execute(sql,(username))
+            r = cursor.fetchone()
+            cursor.close()
+    return r
 
 def getBalance_(id):
-    resultb = conn.execute(userTable.select().where(userTable.c.id == id)).first()
-    return int(resultb['balance'])
+    connection = connect_mysql()
+    with connection:
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = "SELECT * FROM `User` WHERE id=%s"
+            cursor.execute(sql,(id))
+            r = cursor.fetchone()
+            cursor.close()
+    return int(r['balance'])
     
+
