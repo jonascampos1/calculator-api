@@ -172,7 +172,7 @@ def getTotalRecords(user_id):
     with connection:
         with connection.cursor() as cursor:
             # Read a single record
-            sql = "SELECT COUNT(1) as total FROM `Record` WHERE `user_id`=%s"
+            sql = "SELECT COUNT(1) as total FROM `Record` WHERE `user_id`=%s AND deletedAt is NULL"
             cursor.execute(sql,(user_id))
             res = cursor.fetchone()
             cursor.close()
