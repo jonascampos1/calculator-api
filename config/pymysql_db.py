@@ -1,6 +1,8 @@
 import pymysql.cursors
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def connect_mysql():
     connection = pymysql.connect(host=os.getenv('MYSQL_HOST'),

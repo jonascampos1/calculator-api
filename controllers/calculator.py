@@ -1,7 +1,5 @@
 from flask import request, jsonify
 from services import calculator
-from services import user
-import os
 import requests
 
 
@@ -103,7 +101,6 @@ def operation_endpoints(app,route_api):
             v1 = float(request.json.get('v1'))
             v2 = float(request.json.get('v2'))
             user_id = int(request.json.get('user_id'))
-            operation = 'addition'
             
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
@@ -115,10 +112,17 @@ def operation_endpoints(app,route_api):
         if( type(v1) not in [int,float] or type(v2) not in [int,float]):
             response =  jsonify({'message': 'Error is not a int or float'})
             return response, 400
+
+        operation = 'addition'
         
+        #Check balance from user and operation cost and return true if have sufficient and return balance_result
         rbalance = calculator.checkBalance_(operation,user_id)
         if rbalance["check"]:
-            response = calculator.sum_(v1,v2, user_id, operation)
+            result = calculator.sum_(v1,v2)
+            new_balance = rbalance['balance_result']
+            calculator.insertRecord(user_id, operation, new_balance, result)
+            calculator.updateBalance(user_id, new_balance)
+            response = { 'result': result, 'user_balance': new_balance}
         else:
             response = {'message': 'Credit not enough'}
 
@@ -131,8 +135,6 @@ def operation_endpoints(app,route_api):
             v1 = float(request.json.get('v1'))
             v2 = float(request.json.get('v2'))
             user_id = int(request.json.get('user_id'))
-            operation = 'substraction'
-            
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
             return response, 400
@@ -144,12 +146,19 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'Error is not a int or float'})
             return response, 400
         
+        operation = 'substraction'
+
+        #Check balance from user and operation cost and return true if have sufficient and return balance_result
         rbalance = calculator.checkBalance_(operation,user_id)
         if rbalance["check"]:
-            response = calculator.sub_(v1,v2, user_id, operation)
+            result = calculator.sub_(v1,v2)
+            new_balance = rbalance['balance_result']
+            calculator.insertRecord(user_id, operation, new_balance, result)
+            calculator.updateBalance(user_id, new_balance)
+            response = { 'result': result, 'user_balance': new_balance}
         else:
             response = {'message': 'Credit not enough'}
-            
+
         return response
 
 
@@ -158,9 +167,7 @@ def operation_endpoints(app,route_api):
         try:
             v1 = float(request.json.get('v1'))
             v2 = float(request.json.get('v2'))
-            user_id = int(request.json.get('user_id'))
-            operation = 'multiplication'
-
+            user_id = int(request.json.get('user_id'))            
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
             return response, 400
@@ -168,12 +175,23 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'TypeError is not a int or float'})
             return response, 400
 
+        if( type(v1) not in [int,float] or type(v2) not in [int,float]):
+            response =  jsonify({'message': 'Error is not a int or float'})
+            return response, 400
+
+        operation = 'multiplication'
+        
+        #Check balance from user and operation cost and return true if have sufficient and return balance_result
         rbalance = calculator.checkBalance_(operation,user_id)
         if rbalance["check"]:
-            response = calculator.mult_(v1,v2, user_id, operation)
+            result = calculator.mult_(v1,v2)
+            new_balance = rbalance['balance_result']
+            calculator.insertRecord(user_id, operation, new_balance, result)
+            calculator.updateBalance(user_id, new_balance)
+            response = { 'result': result, 'user_balance': new_balance}
         else:
             response = {'message': 'Credit not enough'}
-            
+
         return response
 
 
@@ -182,8 +200,7 @@ def operation_endpoints(app,route_api):
         try:
             v1 = float(request.json.get('v1'))
             v2 = float(request.json.get('v2'))
-            user_id = int(request.json.get('user_id'))
-            operation = 'division'
+            user_id = int(request.json.get('user_id'))            
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
             return response, 400
@@ -191,12 +208,27 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'TypeError is not a int or float'})
             return response, 400
 
+        if( type(v1) not in [int,float] or type(v2) not in [int,float]):
+            response =  jsonify({'message': 'Error is not a int or float'})
+            return response, 400
+
+        if v2==0:
+            response =  jsonify({'message': 'Error: Division by zero'})
+            return response, 400
+
+        operation = 'division'
+        
+        #Check balance from user and operation cost and return true if have sufficient and return balance_result
         rbalance = calculator.checkBalance_(operation,user_id)
         if rbalance["check"]:
-            response = calculator.div_(v1,v2, user_id, operation)
+            result = calculator.div_(v1,v2)
+            new_balance = rbalance['balance_result']
+            calculator.insertRecord(user_id, operation, new_balance, result)
+            calculator.updateBalance(user_id, new_balance)
+            response = { 'result': result, 'user_balance': new_balance}
         else:
             response = {'message': 'Credit not enough'}
-            
+        
         return response
 
 
@@ -205,7 +237,6 @@ def operation_endpoints(app,route_api):
         try:
             v1 = float(request.json.get('v1'))
             user_id = int(request.json.get('user_id'))
-            operation = 'square_root'
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
             return response, 400
@@ -217,49 +248,59 @@ def operation_endpoints(app,route_api):
             response =  jsonify({'message': 'Need a positive value'})
             return response, 400
 
+        operation = 'square_root'
+
         rbalance = calculator.checkBalance_(operation,user_id)
         if rbalance["check"]:
-            response = calculator.square_root_(v1, user_id, operation)
+            result = calculator.square_root_(v1)
+            new_balance = rbalance['balance_result']
+            calculator.insertRecord(user_id, operation, new_balance, result)
+            calculator.updateBalance(user_id, new_balance)
+            response = { 'result': result, 'user_balance': new_balance}
         else:
             response = {'message': 'Credit not enough'}
-            
+        
         return response
 
     @app.route(route_api+'/random_string', methods=["POST"])
     def rand_string():
         url_random_org_string='https://api.random.org/json-rpc/2/invoke'
+
         try:
             user_id = int(request.json.get('user_id'))
-            operation = 'random_string'
         except ValueError:
             response =  jsonify({'message': 'ValueError is not a int or float'})
             return response, 400
         except TypeError:
             response =  jsonify({'message': 'TypeError is not a int or float'})
             return response, 400
-
         
-        data = requests.post(url_random_org_string, json = {
-            "jsonrpc": "2.0",
-            "method": "generateStrings",
-            "params": {
-                "apiKey": "577e944c-bed5-42aa-949e-ce6f6fa4dfb4",
-                "n": 1,
-                "length": 8,
-                "characters": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&*",
-            "replacement": False
-            },
-            "id": 3076
-        })
-        if data.status_code == 200:
-            data=data.json()
-            result = data['result']['random']['data'][0]
-        else:
-            response = {'message': f'Error trying to get random string StatusCode: {data.status_code}'}
-
+        operation = 'random_string'
+        
         rbalance = calculator.checkBalance_(operation,user_id)
         if rbalance["check"]:
-            response = calculator.rand_str_(user_id, operation,result)
+            data = requests.post(url_random_org_string, json = {
+                "jsonrpc": "2.0",
+                "method": "generateStrings",
+                "params": {
+                    "apiKey": "577e944c-bed5-42aa-949e-ce6f6fa4dfb4",
+                    "n": 1,
+                    "length": 8,
+                    "characters": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&*",
+                "replacement": False
+                },
+                "id": 3076
+            })
+
+            if data.status_code == 200:
+                data=data.json()
+                result = data['result']['random']['data'][0]            
+                new_balance = rbalance['balance_result']
+                calculator.insertRecord(user_id, operation, new_balance, result)
+                calculator.updateBalance(user_id, new_balance)
+                response = { 'result': result, 'user_balance': new_balance}
+            else:
+                response = {'message': f'Error trying to get random string StatusCode: {data.status_code}'}
         else:
             response = {'message': 'Credit not enough'}
             

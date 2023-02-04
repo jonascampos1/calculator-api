@@ -9,13 +9,11 @@ import hashlib
 
 def user_endpoints(app,route_api):
 
-
-
     @app.route(route_api + 'user', methods=['POST'])
     def create():
         username = request.json.get('username')
         password = request.json.get('password')
-
+        #regex valid email
         if not re.match(r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$", username):
             response = jsonify({'msg': 'Bad parameters 1', 'status_code': '400'})
             return response, 400

@@ -1,7 +1,6 @@
 from config.pymysql_db import connect_mysql
 from datetime import datetime
 from math import sqrt
-from services.user import getBalance_
 
 
 def getOperations_by_type_(type_: str):
@@ -18,29 +17,24 @@ def getOperations_by_type_(type_: str):
 
 
 def checkBalance_(operation: str, user_id: int):
-    
     connection = connect_mysql()
     with connection:
         with connection.cursor() as cursor:
             # Read a single record
-            sql = "SELECT `cost` FROM `Operation` WHERE `type`=%s"
-            cursor.execute(sql, (operation))
+            sql1 = "SELECT `cost` FROM `Operation` WHERE `type`=%s"
+            cursor.execute(sql1, (operation))
             rcost = cursor.fetchone()
-            cursor.close()
-    
-                 
-    connection = connect_mysql()
-    with connection:
-        with connection.cursor() as cursor:
-            # Read a single record
-            sql = "SELECT * FROM `User` WHERE `id`=%s"
-            cursor.execute(sql, (user_id))
+
+            sql2 = "SELECT * FROM `User` WHERE `id`=%s"
+            cursor.execute(sql2, (user_id))
             ruser = cursor.fetchone()
+
             cursor.close()
 
     if rcost is not None and ruser is not None:
-        if ((ruser['balance'] - rcost['cost']) >= 0 ):
-            return {'check': True}
+        res = ruser['balance'] - rcost['cost']
+        if res >= 0:
+            return {'check': True, 'balance_result': res}
         else:
             return {'check': False}
     else:
@@ -78,70 +72,59 @@ def insertRecord(user_id, operation: str, user_balance, response):
 
     return 0
 
-def sum_(v1,v2,user_id, operation):
-    result = v1+v2
-    r = getOperations_by_type_(operation)
-    user_balance = getBalance_(user_id)
-    user_balance = user_balance - r["cost"]
-    insertRecord(user_id, operation, user_balance, result)
-    response = { 'result': result, 'user_balance': user_balance, 'cost': r["cost"]}
-    updateBalance(user_id, user_balance)
-    return response
+def sum_(v1,v2):
+    if type(v1) not in [int,float]:
+        raise TypeError("Invalid v1 int or float neded")
+    if type(v2) not in [int,float]:
+        raise TypeError("Invalid v1 int or float neded")
+
+    result = v1+v2    
+    return result
     
     
 
-def sub_(v1,v2,user_id, operation):
-    result = v1-v2
-    r = getOperations_by_type_(operation)
-    user_balance = getBalance_(user_id)
-    user_balance = user_balance - r["cost"]
-    insertRecord(user_id, operation, user_balance, result)
-    response = { 'result': result, 'user_balance': user_balance, 'cost': r["cost"]}
-    updateBalance(user_id, user_balance)
-    return response
+def sub_(v1,v2):
+    if type(v1) not in [int,float]:
+        raise TypeError("Invalid v1 int or float neded")
+    if type(v2) not in [int,float]:
+        raise TypeError("Invalid v1 int or float neded")
+
+    result = v1-v2    
+    return result
     
 
-def mult_(v1,v2,user_id, operation): 
-    result = v1*v2
-    r = getOperations_by_type_(operation)
-    user_balance = getBalance_(user_id)
-    user_balance = user_balance - r["cost"]
-    insertRecord(user_id, operation, user_balance, result)
-    response = { 'result': result, 'user_balance': user_balance, 'cost': r["cost"]}
-    updateBalance(user_id, user_balance)
-    return response
+def mult_(v1,v2):
+    if type(v1) not in [int,float]:
+        raise TypeError("Invalid v1 int or float neded")
+    if type(v2) not in [int,float]:
+        raise TypeError("Invalid v1 int or float neded")
+
+    result = v1*v2    
+    return result
 
 
-def div_(v1,v2,user_id, operation): 
+def div_(v1,v2):
+    if type(v1) not in [int,float]:
+        raise TypeError("Invalid v1 int or float neded")
+    if type(v2) not in [int,float]:
+        raise TypeError("Invalid v1 int or float neded")
+
+    if v2==0:
+        raise ZeroDivisionError('Division by zero not possible')
+        
     result = v1/v2
-    r = getOperations_by_type_(operation)
-    user_balance = getBalance_(user_id)
-    user_balance = user_balance - r["cost"]
-    insertRecord(user_id, operation, user_balance, result)
-    response = { 'result': result, 'user_balance': user_balance, 'cost': r["cost"]}
-    updateBalance(user_id, user_balance)
-    return response
+    return result
 
 
-def square_root_(v1,user_id, operation):
+def square_root_(v1):
+    if type(v1) not in [int,float]:
+        raise TypeError("Invalid v1 int or float neded")
+
+    if v1<0:
+        raise ValueError('Square root from a negative value does not exists')
+
     result = round(sqrt(v1),2)
-    r = getOperations_by_type_(operation)
-    user_balance = getBalance_(user_id)
-    user_balance = user_balance - r["cost"]
-    insertRecord(user_id, operation, user_balance, result)
-    response = { 'result': result, 'user_balance': user_balance, 'cost': r["cost"]}
-    updateBalance(user_id, user_balance)
-    return response
-
-
-def rand_str_(user_id, operation, result):
-    r = getOperations_by_type_(operation)
-    user_balance = getBalance_(user_id)
-    user_balance = user_balance - r["cost"]
-    insertRecord(user_id, operation, user_balance, result)
-    response = { 'result': result, 'user_balance': user_balance, 'cost': r["cost"]}
-    updateBalance(user_id, user_balance)
-    return response
+    return result
 
 
 def getOperations_():
@@ -231,4 +214,3 @@ def updateBalance(user_id, user_balance):
             sql = "UPDATE User SET balance='%s' WHERE id='%s'"
             cursor.execute(sql,(user_balance,user_id))
         connection.commit()
-            
