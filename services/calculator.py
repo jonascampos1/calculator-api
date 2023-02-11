@@ -170,12 +170,25 @@ def getRecords_(user_id, page, order_field, order, elements_peer_page):
     with connection:
         with connection.cursor() as cursor:
             # Read a single record
-            sql = "SELECT * FROM Record \
-                    WHERE user_id=%s \
+            sql = f"SELECT\
+                    r.id,\
+                    o.type as operation_id,\
+                    r.user_id,r.amount,\
+                    r.user_balance,\
+                    r.operation_response,\
+                    r.date,\
+                    r.deletedAt \
+                FROM\
+                    Record as r,\
+                    Operation as o\
+                WHERE\
+                    r.user_id={user_id} AND\
+                    o.id=r.operation_id\
                     AND deletedAt IS NULL\
-                    ORDER BY %s %s\
-                    LIMIT %s,%s"
-            cursor.execute(sql,(user_id,order_field,order,npag,elements_peer_page))
+                ORDER BY {order_field} {order}\
+                LIMIT {npag},{elements_peer_page}"
+                    
+            cursor.execute(sql)
             res = cursor.fetchall()
             cursor.close()
     
